@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<script src="http://cloud.github.com/downloads/processing-js/processing-js/processing-1.4.1.min.js"></script>
+		<script type="text/processing" data-processing-target="mycanvas">	
+			var backgroundWidth = 1800;
+			var backgroundHeight = 900;
+			var scrollers = [];
+			var layers = 6;
+			void setup()
+			{
+			  size(backgroundWidth,backgroundHeight);
+			  background(0, 106, 135);
+			  
+			  for(var j = 1; j <= layers; j++) {
+			  		scrollers.push(new Scroller(j*2,backgroundWidth*(.05*j),backgroundWidth*(.10*j),backgroundHeight*(.5/j),backgroundHeight/j));
+			  		//scrollers.push(new Scroller(j*2,100*j-(1/j)*50,100*j,(1000-200*j)-(1/j)*1000,1000-200*j));
+					var counter = 0;
+					//println(counter);
+				  for(var i = 0; i < 100; i++){
+				  	var randomW = random(scrollers[j-1].minWidth, scrollers[j-1].maxWidth);				  	
+				  	var randomH = random(scrollers[j-1].minHeight, scrollers[j-1].maxHeight);
+				  	counter += randomW;
+				 // 	println(counter);
+				  	scrollers[j-1].addBuilding(randomW,randomH,[0,0,(layers-j)*50/sqrt(layers)],-counter,backgroundHeight-randomH);
+				  //	myScroller.addBuilding(randomW, randomH, [0,0,0], -counter, 500-randomH);
+				  //	scroller2.addBuilding(randomW, randomH, [50,50,50], -counter, 400-randomH);
+				   // scroller3.addBuilding(randomW, randomH, [100,100,100], -counter, 300-randomH);
+				  	
+				  }
+				} 
+			}
+
+			void draw(){ 
+				background(0, 106, 135);
+				fill(0,0,0);
+				stroke(255,255,255);
+				//noStroke();
+		/*		scroller3.drawScroller();
+				scroller3.moveScroller()				
+				scroller2.drawScroller();
+				scroller2.moveScroller();
+				myScroller.drawScroller();
+				myScroller.moveScroller();	*/
+				for(var i = 0; i < scrollers.length;i++) {
+					scrollers[i].drawScroller();
+					scrollers[i].moveScroller();
+				}
+			}
+			
+			
+			class Scroller{
+				var speed;
+				var minWidth;
+				var maxWidth;
+				var minHeight;
+				var maxHeight;	
+				var buildingList = [];				
+				Scroller(s,mw,maw,mh,mah){					
+					speed = s;
+					minWidth=mw;
+					maxWidth=maw;
+					minHeight=mh;
+					maxHeight=mah;			
+				}
+
+				void drawScroller(){									
+					for(var i = 0; i < buildingList.length; i++){
+						buildingList[i].drawBuilding();
+					}					
+				}
+				
+				void addBuilding(w,h,c,xPosition,yPosition){
+					buildingList.push(new Building(w, h, c, xPosition, yPosition, speed));
+				}
+				
+				void moveScroller(){
+					for(var i = 0; i < buildingList.length; i++){
+						buildingList[i].moveBuilding();
+					}
+					
+				}
+				
+				
+				
+			}
+			
+			class Building{
+				var width;
+				var height;
+				var color;
+				var xPos;
+				var yPos;
+				var speed;
+				Building(w, h, c, xPosition, yPosition, s){
+					width = w;
+					height = h;
+					color = c;
+					
+					xPos = xPosition;
+					yPos = yPosition;
+					speed = s;
+				}
+				
+				void drawBuilding(){
+					
+					fill(color[0], color[1], color[2]);
+					rect(xPos, yPos, width, height);
+				}
+				var counter = 0;
+				void moveBuilding(){
+					xPos = xPos + speed;
+					yPos = yPos + speed*5*sin(counter/5);
+					counter++;
+				}
+				
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="mycanvas"></canvas>
+	</body>
+</html>
